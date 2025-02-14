@@ -1,0 +1,10 @@
+[setup]
+python_version = "3.11"
+postgres_version = "16.dev"
+gcc_version = "latest"
+
+[install]
+command = "python -m venv --copies ./project && . ./project/Scripts/activate.bat && pip install -r requirements.txt"
+
+[start]
+command = ". ./project/Scripts/activate.bat && python manage.py migrate && gunicorn gift_shop.wsgi:application --bind 0.0.0.0:8000"

@@ -1,7 +1,7 @@
 
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,10 +13,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yvfc7w#hgol#u$7biqh%cgx4s1=57^u*lt_jv04j#xd)&&)v4p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']]
+CSRF_TRUSTED_ORIGINS = ['https://'+os.environ['WEBSITE_HOSTNAME']]
 
+STORAGES ={
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+    "staticfiles": "whitenoise.storage.CompressedStaticFilesStorage",
+}
+
+# stripe
 STRIPE_SECRET_KEY = 'sk_test_51Qov3RKVohXcPECSbsokAMQUFaZ0B2VyGLMzNuUzYcMOL5KFd5bDp1zpaNxLj0TDZBIYx8nvWNN3UwlQY8ujxOmn00g82PH81Q'
 # Application definition
 
@@ -43,11 +52,11 @@ INSTALLED_APPS = [
 
     'gift',
     'order',
+    'whitenoise.runserver_nostatic',
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8000",
+    "http://localhost:8080", "http://127.0.0.1:8000", "https://shop2gift.netlify.app", "https://vuefrontendgift.vercel.app/",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
 ]
 
 ROOT_URLCONF = 'gift_shop.urls'
@@ -132,6 +142,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / '/media/'

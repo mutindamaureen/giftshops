@@ -1,0 +1,5 @@
+web: gunicorn gift_shop.wsgi --log-file -
+
+web: python manage.py && gunicorn gift_shop.wsgi
+
+web: .\project\Scripts\activate.bat && gunicorn "gift_shop.wsgi:application" --bind 0.0.0.0:8000
